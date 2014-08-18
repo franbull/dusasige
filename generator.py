@@ -1,4 +1,3 @@
-from .. import generator
 
 # from http://getbootstrap.com/getting-started/#template
 BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
@@ -30,9 +29,5 @@ BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
 </html>
 '''
 
-
-def test_generate_no_args():
-    html = generator.generate()
-    assert html == BOOTSTRAP_BASIC_TEMPLATE
-
-
+def generate():
+    return BOOTSTRAP_BASIC_TEMPLATE
