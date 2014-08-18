@@ -1,0 +1,3 @@
+apple
+<!--slot='1.txt'-->
+<!--slot='2.txt'-->

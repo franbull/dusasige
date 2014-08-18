@@ -1,3 +1,5 @@
+import os
+
 from .. import generator
 
 # from http://getbootstrap.com/getting-started/#template
@@ -31,8 +33,22 @@ BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
 '''
 
 
+here_dir = os.path.dirname(__file__)
+
+
 def test_generate_no_args():
     html = generator.generate()
     assert html == BOOTSTRAP_BASIC_TEMPLATE
 
 
+def test_generate_slot():
+    template_text = 'apple<!--slot="other_fruit"--> cherry<!--slot="durian"-->'
+    new_text = generator.fill_slot(template_text, {'other_fruit': ' banana', 'durian': ' durian'})
+    assert 'apple banana cherry durian' == new_text
+
+
+def test_generate_from_file_with_slots():
+    path = os.path.join(here_dir, 'test_assets/test_generate_from_file_with_slots/base.txt')
+    results = generator.fill_slots_in_file(path)
+    expected = open(os.path.join(here_dir, 'test_assets/test_generate_from_file_with_slots/expected.txt')).read()
+    assert results == expected

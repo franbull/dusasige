@@ -1,3 +1,5 @@
+import os
+import re
 
 # from http://getbootstrap.com/getting-started/#template
 BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
@@ -29,5 +31,33 @@ BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
 </html>
 '''
 
+
 def generate():
     return BOOTSTRAP_BASIC_TEMPLATE
+
+
+def fill_slot(template, data=None, root_dir=None):
+    def repl(match):
+        kind, value = match.groups()
+        if kind == 'slot':
+            if root_dir is not None:
+                try:
+                    value = open(os.path.join(root_dir, value), 'r').read()
+                    return value
+                except IOError as e:
+                    print e
+                    pass
+            return '%(' + value + ')s'
+        return None
+
+    pattern = '<!--\s*(\S*)=[\"\'](\S*)[\"\']\s*-->'
+    template = re.sub(pattern, repl, template)
+    if data is None:
+        return template
+    return template % data
+
+
+def fill_slots_in_file(file_path):
+    #assume files are small enough to read all into memory
+    template = open(file_path, 'r').read()
+    return fill_slot(template, root_dir=os.path.dirname(file_path))
