@@ -1,5 +1,6 @@
 import os
 import re
+import simplejson
 
 # from http://getbootstrap.com/getting-started/#template
 BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
@@ -32,17 +33,30 @@ BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
 '''
 
 
+def get_file_contents(file_path):
+    return open(file_path, 'r').read()
+
+
+def dict_from_json_file(file_path):
+    return simplejson.loads(get_file_contents(file_path))
+
+
 def generate():
     return BOOTSTRAP_BASIC_TEMPLATE
 
 
 def fill_slot(template, data=None, root_dir=None):
+    if data is None:
+        data = {}
+
     def repl(match):
         kind, value = match.groups()
-        if kind == 'slot':
+        if kind == 'properties':
+            data.update(dict_from_json_file(os.path.join(root_dir, value)))
+        elif kind == 'slot':
             if root_dir is not None:
                 try:
-                    value = open(os.path.join(root_dir, value), 'r').read()
+                    value = get_file_contents(os.path.join(root_dir, value))
                     return value
                 except IOError as e:
                     print e
@@ -59,5 +73,11 @@ def fill_slot(template, data=None, root_dir=None):
 
 def fill_slots_in_file(file_path):
     #assume files are small enough to read all into memory
-    template = open(file_path, 'r').read()
+    template = get_file_contents(file_path)
     return fill_slot(template, root_dir=os.path.dirname(file_path))
+
+
+def read_config_into(file_path):
+    template = get_file_contents(file_path)
+    return fill_slot(template, None, os.path.dirname(file_path))
+

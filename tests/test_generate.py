@@ -33,7 +33,7 @@ BOOTSTRAP_BASIC_TEMPLATE = '''<!DOCTYPE html>
 '''
 
 
-here_dir = os.path.dirname(__file__)
+HERE_DIR = os.path.dirname(__file__)
 
 
 def test_generate_no_args():
@@ -48,7 +48,22 @@ def test_generate_slot():
 
 
 def test_generate_from_file_with_slots():
-    path = os.path.join(here_dir, 'test_assets/test_generate_from_file_with_slots/base.txt')
+    path = os.path.join(HERE_DIR, 'test_assets/test_generate_from_file_with_slots/base.txt')
     results = generator.fill_slots_in_file(path)
-    expected = open(os.path.join(here_dir, 'test_assets/test_generate_from_file_with_slots/expected.txt')).read()
+    expected = open(os.path.join(HERE_DIR, 'test_assets/test_generate_from_file_with_slots/expected.txt')).read()
     assert results == expected
+
+
+def test_read_config_into_file():
+    test_path = os.path.join(HERE_DIR, 'test_assets/test_read_config_into_file')
+    results = generator.read_config_into(os.path.join(test_path, 'base.txt'))
+    expected = open(os.path.join(test_path, 'expected.txt')).read()
+    assert results == expected
+
+
+def test_template_if():
+    pass
+
+
+def test_template_for():
+    pass

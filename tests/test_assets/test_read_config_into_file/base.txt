@@ -1,0 +1,4 @@
+apple
+<!--properties="properties.json"-->
+<!--slot="fruit1"-->
+<!--slot="fruit2"-->
